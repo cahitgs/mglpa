@@ -45,25 +45,44 @@ groups and missing indicator values (see `tests/testthat`).
 
 ## Installation
 
-1. Install [R](https://cran.r-project.org/) (version 4.1 or later).
-   [RStudio](https://posit.co/download/rstudio-desktop/) is convenient but not
-   required.
-2. Install a C++ compiler, which R needs to build the package from its source
-   code:
-   - **Windows:** [Rtools](https://cran.r-project.org/bin/windows/Rtools/) in
-     the version that belongs to your version of R (Rtools45 for R 4.5 and
-     R 4.6, Rtools44 for R 4.4). Install it in the suggested folder and
-     restart R.
-   - **macOS:** the Xcode command-line tools (run `xcode-select --install` in
-     the Terminal).
-   - **Linux:** usually installed already (`r-base-dev` on Debian and Ubuntu).
-3. In R, install the package from GitHub together with the packages used by
-   the Shiny application:
+1. Install [R](https://cran.r-project.org/). The current release is
+   recommended; [RStudio](https://posit.co/download/rstudio-desktop/) is
+   convenient but not required.
+2. In R, install the package together with the packages used by the Shiny
+   application:
 
    ```r
-   install.packages(c("remotes", "shiny", "bslib", "DT"))
-   remotes::install_github("cahitgs/mglpa")
+   install.packages(c("mglpa", "shiny", "bslib", "DT"),
+                    repos = c("https://cahitgs.r-universe.dev", "https://cloud.r-project.org"))
    ```
+
+On Windows and macOS this installs a ready-to-use (binary) version of the
+package from [R-universe](https://cahitgs.r-universe.dev/mglpa), so no
+compiler or other additional software is needed. Binary versions are built
+for the current and the previous release of R (R 4.6 and R 4.5 at the time of
+writing) and are rebuilt automatically when this repository changes. R may
+warn that the package "was built under" a slightly newer version of R (4.6.2
+with R 4.6.1, for example); this can be ignored.
+
+### Installing from source
+
+With an older version of R (4.1 is the minimum) and on Linux the command
+above compiles the package on your computer, and so does an installation
+directly from GitHub:
+
+```r
+install.packages("remotes")
+remotes::install_github("cahitgs/mglpa")
+```
+
+Both need a C++ compiler:
+
+- **Windows:** [Rtools](https://cran.r-project.org/bin/windows/Rtools/) in the
+  version that belongs to your version of R (Rtools45 for R 4.5 and R 4.6,
+  Rtools44 for R 4.4). Install it in the suggested folder and restart R.
+- **macOS:** the Xcode command-line tools (run `xcode-select --install` in the
+  Terminal).
+- **Linux:** usually installed already (`r-base-dev` on Debian and Ubuntu).
 
 If the installation stops with `Could not find tools necessary to compile a
 package`, Rtools is missing or does not match the version of R. RStudio may
