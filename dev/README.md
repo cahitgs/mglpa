@@ -10,6 +10,7 @@ folder, for example `Rscript mglpa/dev/test_app.R`.
 | `validate_hard.R` | Solutions that need several thousand random starts to reach the global maximum. |
 | `e2e.R` | End-to-end run of the whole workflow on the example data. |
 | `test_app.R` | Headless test of the Shiny application (`shiny::testServer`). |
+| `screenshots.R` | Drives the installed application in headless Chrome (chromote package) and writes the README screenshots to `man/figures/`; doubles as an end-to-end check of the user interface. The committed images were afterwards reduced to a 256-colour palette. |
 | `test_parallel.R` | Timing of parallel random starts (needs the installed package). |
 | `mplus_reference_extra.R` | Writes and runs the additional Mplus inputs in `mplus_extra/` (class-varying variances, three known groups, missing data) and updates the reference values; needs a local Mplus installation. |
 

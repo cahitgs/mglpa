@@ -33,8 +33,8 @@ needed.
   Mplus `TECH11`), a parametric bootstrap likelihood ratio test (`blrt()`,
   `TECH14`), classification-quality tables, elbow plots, profile plots (bar,
   line, radar; nine palettes), APA-style tables and Word-compatible exports.
-- A Shiny application (`mglpa_app()`) with the same five-step workflow as the
-  web tool.
+- A Shiny application (`mglpa_app()`) with the same workflow as the web tool,
+  for analyses without writing R code ([see below](#the-shiny-application)).
 
 The log-likelihoods, free-parameter counts, information criteria, entropy,
 standard errors and the `TECH11` tests (statistic, mean, standard deviation
@@ -45,17 +45,79 @@ groups and missing indicator values (see `tests/testthat`).
 
 ## Installation
 
-```r
-# from GitHub
-install.packages("remotes")
-remotes::install_github("cahitgs/mglpa")
+1. Install [R](https://cran.r-project.org/) (version 4.1 or later).
+   [RStudio](https://posit.co/download/rstudio-desktop/) is convenient but not
+   required.
+2. Install a C++ compiler, which R needs to build the package from its source
+   code: [Rtools](https://cran.r-project.org/bin/windows/Rtools/) on Windows
+   (the version that matches your R version) or the Xcode command-line tools
+   on macOS (run `xcode-select --install` in the Terminal). Linux systems
+   usually have a compiler already (`r-base-dev` on Debian and Ubuntu).
+3. In R, install the package from GitHub together with the packages used by
+   the Shiny application:
 
-# or from a local copy of the source folder
-remotes::install_local("path/to/mglpa")
+   ```r
+   install.packages(c("remotes", "shiny", "bslib", "DT"))
+   remotes::install_github("cahitgs/mglpa")
+   ```
+
+A local copy of the source folder can be installed with
+`remotes::install_local("path/to/mglpa")`.
+
+## The Shiny application
+
+The package comes with a point-and-click application that covers the whole
+workflow, so no R code has to be written. It runs on your own computer: the
+data stay there and every model is estimated by R.
+
+```r
+library(mglpa)
+mglpa_app()
 ```
 
-The package contains compiled C++ code, so installing it from source needs a
-C++ compiler (Rtools on Windows, the Xcode command-line tools on macOS).
+The application opens in the web browser (or in the RStudio window). Click
+**Use the example data set** on the first tab to try it with the data of the
+examples below, or upload your own CSV file. To stop the application, close
+the browser tab and press `Esc` in the R console (`Ctrl + C` in a terminal).
+
+![Data tab: data import and selection of the variables](man/figures/app-data.png)
+
+The tabs follow the steps of the analysis. The settings of each step (number
+of profiles, variance specification, random starts, seed) are in the sidebar
+on the left; it is collapsed in the screenshots below to leave room for the
+tables.
+
+| Tab | What it does |
+|---|---|
+| **1. Data** | Upload a CSV file or load the example data; choose the profile indicators, the grouping variable, the predictors and the distal outcomes, and the number of CPU cores used for the random starts. |
+| **2. Enumeration** | Solutions with 1 to *k* profiles in each group: log-likelihood, information criteria, entropy, VLMR and aLMR tests, the bootstrap likelihood ratio test on request, elbow plot, and the profile plot and classification quality of any solution. |
+| **3. Similarity tests** | Configural, structural, dispersion and distributional similarity with the decision for each step, profile proportions by group and profile plots of every model. |
+| **4. Predictive** | Regression of profile membership on the predictors with effects free or equal across groups; coefficients, odds ratios and confidence intervals for all pairs of profiles. |
+| **5. Explanatory** | Outcome means by profile and group, the test of their equality across groups, and pairwise differences between profiles and between groups. |
+| **6. Project** | Save the whole analysis to a file and load it again; export all tables to one Word file. |
+
+Next to every model the application shows whether the estimation converged
+and how often the best log-likelihood was replicated (green, yellow or red),
+with Mplus-style warnings in the notes below the table. In the example below,
+run with the default number of random starts, two solutions did not replicate
+their best log-likelihood often enough and are flagged; more random starts
+remove such warnings. Tables can be downloaded as CSV files or as
+Word-compatible APA tables, and plots as PNG files.
+
+![Class enumeration: fit indices, likelihood ratio tests, estimation notes and elbow plot](man/figures/app-enumeration.png)
+
+![Similarity tests: fit indices, decisions, profile proportions and profile plot](man/figures/app-similarity.png)
+
+<details>
+<summary>More screenshots: profile plot and classification quality, predictive similarity, explanatory similarity</summary>
+
+![Profile plot and classification quality of a solution](man/figures/app-profiles.png)
+
+![Predictive similarity: fit indices, decision and effects of the predictors](man/figures/app-predictive.png)
+
+![Explanatory similarity: fit indices, decision, outcome means and pairwise differences](man/figures/app-explanatory.png)
+
+</details>
 
 ## Quick start
 
@@ -121,9 +183,8 @@ maximum, exactly as in Mplus.
 The EM iterations run in compiled C++ code (Rcpp) for all enumeration and
 similarity models; a pure-R implementation of the same algorithm is kept as a
 reference (`engine = "r"`) and is used automatically for models with
-predictors of profile membership or fixed membership logits. Installing from
-source therefore needs a C++ compiler (Rtools on Windows, Xcode command-line
-tools on macOS). On the example data (N = 500, 8 profiles) 10,000 initial and
+predictors of profile membership or fixed membership logits. On the example
+data (N = 500, 8 profiles) 10,000 initial and
 500 final random starts take about 100 seconds on one core; `cores = n`
 distributes the random starts over `n` CPU cores (installed package required).
 
