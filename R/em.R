@@ -643,6 +643,13 @@ random_start <- function(pt, D, info, model) {
 
 run_random_starts <- function(pt, D, info, model, starts, stiterations, maxiter,
                               tol, user_vals, verbose, cores = 1L) {
+  # Evaluate the arguments here: the functions below are sent to the worker
+  # processes, where an argument given as a variable of the calling
+  # environment could not be evaluated any more.
+  stiterations <- as.integer(stiterations)
+  maxiter <- as.integer(maxiter)
+  tol <- as.numeric(tol)
+  verbose <- isTRUE(verbose)
   n1 <- as.integer(starts[1L]); n2 <- as.integer(starts[2L])
   inits <- list()
   if (!is.null(user_vals)) inits[[1L]] <- user_vals

@@ -87,6 +87,14 @@ blrt <- function(fit_k, fit_km1, B = 100, starts = c(20, 4), seed = NULL, verbos
   stopifnot(inherits(fit_k, "mglpa_fit"), inherits(fit_km1, "mglpa_fit"))
   if (fit_k$model$k != fit_km1$model$k + 1L) stop("`fit_k` must have one more profile than `fit_km1`.")
   if (fit_k$data$N != fit_km1$data$N) stop("The two fits must be estimated on the same data.")
+  # Evaluate the arguments here: the function that analyses a draw is sent to
+  # the worker processes, where an argument given as a variable of the calling
+  # environment could not be evaluated any more.
+  starts <- as.integer(starts)
+  if (length(starts) != 2L || anyNA(starts) || any(starts < 0L))
+    stop("`starts` must be two non-negative integers.")
+  verbose <- isTRUE(verbose)
+  cores <- max(1L, as.integer(cores))
   B <- as.integer(B)
   if (is.null(maxiter)) maxiter <- if (is.null(fit_k$starts$maxiter)) 500 else fit_k$starts$maxiter
   if (is.null(tol)) tol <- if (is.null(fit_k$starts$tol)) 1e-6 else fit_k$starts$tol

@@ -281,6 +281,8 @@ app_server <- function(initial_data = NULL) {
                           "entropy", "LRT", "VLMR_p", "aLMR_p", "BLRT_p", "min_proportion",
                           "dCAIC", "dBIC", "dABIC", "n_decrease",
                           "decision", if (badges) c("replicated", "converged", "reps_n")), names(tab))
+      # columns without any value (e.g. `model` in the class enumeration) are not shown
+      cols <- cols[!vapply(tab[cols], function(x) all(is.na(x)), logical(1))]
       tab <- tab[, cols, drop = FALSE]
       hidden <- which(cols == "reps_n") - 1L
       dt <- DT::datatable(tab, rownames = FALSE,
@@ -334,27 +336,42 @@ app_server <- function(initial_data = NULL) {
         rv$enum <- rv$sim <- rv$pred <- rv$expl <- NULL
       }, error = notify_error)
     })
-    shiny::observeEvent(input$use_example, {
-      e <- new.env()
-      utils::data("mglpa_wm", package = "mglpa", envir = e)
-      rv$data <- e$mglpa_wm
-      rv$enum <- rv$sim <- rv$pred <- rv$expl <- NULL
-      shiny::updateSelectizeInput(session, "indicators",
-        selected = c("verbal_wm", "visual_wm", "updating", "inhibition", "proc_speed"))
-      shiny::updateSelectizeInput(session, "group", selected = "group")
-      shiny::updateSelectizeInput(session, "predictors", selected = c("education", "cog_reserve"))
-      shiny::updateSelectizeInput(session, "outcomes", selected = c("task_perf", "everyday_func"))
-    }, ignoreInit = TRUE)
-    shiny::observeEvent(rv$data, {
-      d <- rv$data
+    # The variable inputs must receive their choices and their selection in
+    # the same message: a selection that arrives before the choices exist is
+    # dropped by the browser. A selection that comes with a data set (example
+    # data, loaded project) is therefore kept in `preselect` and applied when
+    # the choices are filled; otherwise the current selection is kept as far
+    # as the variables exist in the new data.
+    preselect <- NULL
+    set_variable_inputs <- function(d) {
       num <- names(d)[vapply(d, is.numeric, logical(1))]
-      keep <- function(id) intersect(shiny::isolate(input[[id]]), names(d))
+      pre <- preselect
+      preselect <<- NULL
+      keep <- function(id)
+        intersect(if (is.null(pre)) shiny::isolate(input[[id]]) else pre[[id]], names(d))
       shiny::updateSelectizeInput(session, "indicators", choices = num, selected = keep("indicators"))
       shiny::updateSelectizeInput(session, "group", choices = c("(none)" = "", names(d)),
                                   selected = keep("group"))
       shiny::updateSelectizeInput(session, "predictors", choices = num, selected = keep("predictors"))
       shiny::updateSelectizeInput(session, "outcomes", choices = num, selected = keep("outcomes"))
-    })
+    }
+    load_data <- function(d, selection) {
+      if (is.null(d)) { rv$data <- NULL; return(invisible(NULL)) }
+      preselect <<- selection
+      # an unchanged data set does not trigger the observer below
+      if (identical(shiny::isolate(rv$data), d)) set_variable_inputs(d) else rv$data <- d
+      invisible(NULL)
+    }
+    shiny::observeEvent(input$use_example, {
+      e <- new.env()
+      utils::data("mglpa_wm", package = "mglpa", envir = e)
+      rv$enum <- rv$sim <- rv$pred <- rv$expl <- NULL
+      load_data(e$mglpa_wm, list(
+        indicators = c("verbal_wm", "visual_wm", "updating", "inhibition", "proc_speed"),
+        group = "group", predictors = c("education", "cog_reserve"),
+        outcomes = c("task_perf", "everyday_func")))
+    }, ignoreInit = TRUE)
+    shiny::observeEvent(rv$data, set_variable_inputs(rv$data))
     output$data_summary <- shiny::renderUI({
       d <- rv$data
       if (is.null(d)) return(shiny::p("No data loaded. Upload a CSV file or use the example data set."))
@@ -645,13 +662,10 @@ app_server <- function(initial_data = NULL) {
     shiny::observeEvent(input$load_project, {
       tryCatch({
         pr <- readRDS(input$load_project$datapath)
-        rv$data <- pr$data
-        rv$enum <- pr$enum; rv$sim <- pr$sim; rv$pred <- pr$pred; rv$expl <- pr$expl
         s <- pr$settings
-        shiny::updateSelectizeInput(session, "indicators", selected = s$indicators)
-        shiny::updateSelectizeInput(session, "group", selected = s$group)
-        shiny::updateSelectizeInput(session, "predictors", selected = s$predictors)
-        shiny::updateSelectizeInput(session, "outcomes", selected = s$outcomes)
+        load_data(pr$data, list(indicators = s$indicators, group = s$group,
+                                predictors = s$predictors, outcomes = s$outcomes))
+        rv$enum <- pr$enum; rv$sim <- pr$sim; rv$pred <- pr$pred; rv$expl <- pr$expl
         if (!is.null(pr$enum)) {
           shiny::updateSelectInput(session, "enum_plot_group", choices = names(pr$enum$fits))
           shiny::updateSelectInput(session, "enum_plot_k", choices = as.character(pr$enum$k))
