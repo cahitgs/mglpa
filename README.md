@@ -49,10 +49,14 @@ groups and missing indicator values (see `tests/testthat`).
    [RStudio](https://posit.co/download/rstudio-desktop/) is convenient but not
    required.
 2. Install a C++ compiler, which R needs to build the package from its source
-   code: [Rtools](https://cran.r-project.org/bin/windows/Rtools/) on Windows
-   (the version that matches your R version) or the Xcode command-line tools
-   on macOS (run `xcode-select --install` in the Terminal). Linux systems
-   usually have a compiler already (`r-base-dev` on Debian and Ubuntu).
+   code:
+   - **Windows:** [Rtools](https://cran.r-project.org/bin/windows/Rtools/) in
+     the version that belongs to your version of R (Rtools45 for R 4.5 and
+     R 4.6, Rtools44 for R 4.4). Install it in the suggested folder and
+     restart R.
+   - **macOS:** the Xcode command-line tools (run `xcode-select --install` in
+     the Terminal).
+   - **Linux:** usually installed already (`r-base-dev` on Debian and Ubuntu).
 3. In R, install the package from GitHub together with the packages used by
    the Shiny application:
 
@@ -60,6 +64,13 @@ groups and missing indicator values (see `tests/testthat`).
    install.packages(c("remotes", "shiny", "bslib", "DT"))
    remotes::install_github("cahitgs/mglpa")
    ```
+
+If the installation stops with `Could not find tools necessary to compile a
+package`, Rtools is missing or does not match the version of R. RStudio may
+offer to download the build tools itself; check that it installs the version
+for your version of R (Rtools44 does not work with R 4.5 or later). After
+installing the right version and restarting R, `Sys.which("make")` shows a
+path inside the Rtools folder, such as `C:\rtools45\usr\bin\make.exe`.
 
 A local copy of the source folder can be installed with
 `remotes::install_local("path/to/mglpa")`.
