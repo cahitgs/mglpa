@@ -1,4 +1,4 @@
-# mglpa
+# mglpa in R
 
 **Multi-group latent profile analysis and tests of profile similarity in R.**
 
