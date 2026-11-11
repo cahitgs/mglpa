@@ -1,0 +1,49 @@
+TITLE: m4_structural_3groups
+DATA: FILE IS wm3.dat;
+VARIABLE:
+  NAMES = id group group3 verbal_m visual_m updating inhibitn proc_spd educatin
+    cog_rese task_pef everydac;
+  USEVARIABLES = verbal_m visual_m updating inhibitn proc_spd;
+  KNOWNCLASS = cg (group3 = 1 group3 = 2 group3 = 3);
+  CLASSES = cg (3) c (3);
+
+ANALYSIS:
+  TYPE = MIXTURE;
+  ESTIMATOR = MLR;
+  STARTS = 1000 100;
+  STITERATIONS = 20;
+  PROCESSORS = 8;
+
+MODEL:
+  %OVERALL%
+  c#1 on cg#1 cg#2;
+  c#2 on cg#1 cg#2;
+  %cg#1.c#1%
+  [verbal_m visual_m updating inhibitn proc_spd] (m1_1-m1_5);
+  verbal_m visual_m updating inhibitn proc_spd (vg1_1-vg1_5);
+  %cg#1.c#2%
+  [verbal_m visual_m updating inhibitn proc_spd] (m2_1-m2_5);
+  verbal_m visual_m updating inhibitn proc_spd (vg1_1-vg1_5);
+  %cg#1.c#3%
+  [verbal_m visual_m updating inhibitn proc_spd] (m3_1-m3_5);
+  verbal_m visual_m updating inhibitn proc_spd (vg1_1-vg1_5);
+  %cg#2.c#1%
+  [verbal_m visual_m updating inhibitn proc_spd] (m1_1-m1_5);
+  verbal_m visual_m updating inhibitn proc_spd (vg2_1-vg2_5);
+  %cg#2.c#2%
+  [verbal_m visual_m updating inhibitn proc_spd] (m2_1-m2_5);
+  verbal_m visual_m updating inhibitn proc_spd (vg2_1-vg2_5);
+  %cg#2.c#3%
+  [verbal_m visual_m updating inhibitn proc_spd] (m3_1-m3_5);
+  verbal_m visual_m updating inhibitn proc_spd (vg2_1-vg2_5);
+  %cg#3.c#1%
+  [verbal_m visual_m updating inhibitn proc_spd] (m1_1-m1_5);
+  verbal_m visual_m updating inhibitn proc_spd (vg3_1-vg3_5);
+  %cg#3.c#2%
+  [verbal_m visual_m updating inhibitn proc_spd] (m2_1-m2_5);
+  verbal_m visual_m updating inhibitn proc_spd (vg3_1-vg3_5);
+  %cg#3.c#3%
+  [verbal_m visual_m updating inhibitn proc_spd] (m3_1-m3_5);
+  verbal_m visual_m updating inhibitn proc_spd (vg3_1-vg3_5);
+
+OUTPUT: TECH1;

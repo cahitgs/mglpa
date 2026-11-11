@@ -1,0 +1,30 @@
+Package: mglpa
+Type: Package
+Title: Multi-Group Latent Profile Analysis and Tests of Profile Similarity
+Version: 0.0.0.9000
+Authors@R: c(
+    person("Mehmet Cahit", "Marangoz",
+           email = "191721087+cahitgs@users.noreply.github.com",
+           role = c("aut", "cre"), comment = c(ORCID = "0000-0003-0850-2251")))
+Description: Estimates latent profile analysis (LPA) models with continuous
+    indicators across known groups and implements the sequence of multi-group
+    tests of profile similarity proposed by Morin, Meyer, Creusier and Bietry
+    (2016) <doi:10.1177/1094428115621148>: class enumeration, configural,
+    structural, dispersion, distributional, predictive and explanatory
+    similarity. Estimation is carried out in R with an expectation-maximisation
+    algorithm using random starts, with maximum-likelihood and robust
+    (sandwich) standard errors, so that no external mixture-modelling software
+    is required.
+License: MIT + file LICENSE
+URL: https://github.com/cahitgs/mglpa
+BugReports: https://github.com/cahitgs/mglpa/issues
+Encoding: UTF-8
+LazyData: true
+Depends: R (>= 4.1)
+Imports: stats, utils, parallel, ggplot2 (>= 3.5.0), rlang, Rcpp
+LinkingTo: Rcpp
+Suggests: testthat (>= 3.0.0), shiny (>= 1.7.0), bslib, DT, nnet, knitr, rmarkdown
+VignetteBuilder: knitr
+Config/testthat/edition: 3
+Roxygen: list(markdown = TRUE)
+Config/roxygen2/version: 8.1.1

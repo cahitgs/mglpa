@@ -1,0 +1,9 @@
+^dev$
+^.*\.Rproj$
+^\.Rproj\.user$
+^LICENSE\.md$
+^src/.*\.o$
+^src/.*\.dll$
+^src/.*\.so$
+^tests/testthat/_problems$
+^tests/testthat/testthat-problems\.rds$

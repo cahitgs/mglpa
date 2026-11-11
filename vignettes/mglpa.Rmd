@@ -1,0 +1,216 @@
+---
+title: "Multi-group tests of profile similarity with mglpa"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Multi-group tests of profile similarity with mglpa}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7, fig.height = 4)
+```
+
+`mglpa` implements, entirely in R, the sequence of multi-group tests of
+profile similarity proposed by Morin, Meyer, Creusier and Biétry (2016) for
+latent profile analysis (LPA) with continuous indicators:
+
+0. **Class enumeration** in each group (how many profiles?);
+1. **Configural similarity** (same number of profiles in every group);
+2. **Structural similarity** (same profile means);
+3. **Dispersion similarity** (same within-profile variances);
+4. **Distributional similarity** (same profile proportions);
+5. **Predictive similarity** (same relations between predictors and profile
+   membership);
+6. **Explanatory similarity** (same profile-specific levels of distal outcomes).
+
+The models are diagonal Gaussian mixtures estimated by maximum likelihood with
+an EM algorithm and Mplus-style random starts. The package reproduces the
+log-likelihoods, free-parameter counts, information criteria and entropy that
+Mplus reports for the same models (the conventions are described at the end).
+
+The random starts in this vignette are kept small so that it builds quickly;
+use many more in practice (for example `starts = c(500, 50)` or more). The EM
+iterations of the enumeration and similarity models run in compiled C++ code,
+and `cores = n` distributes the random starts over several CPU cores.
+
+## Data
+
+The example data set contains five standardized working-memory indicators for
+500 younger and 500 older adults, two predictors and two distal outcomes.
+
+```{r}
+library(mglpa)
+data(mglpa_wm)
+head(mglpa_wm)
+ind <- c("verbal_wm", "visual_wm", "updating", "inhibition", "proc_speed")
+```
+
+## Step 0: class enumeration
+
+```{r}
+enum <- enumerate_profiles(mglpa_wm, ind, group = "group", k = 1:4,
+                           starts = c(20, 4), seed = 1, verbose = FALSE)
+enum
+elbow_plot(enum)
+```
+
+The columns `VLMR_p` and `aLMR_p` are the p-values of the Vuong-Lo-Mendell-Rubin
+likelihood ratio test and of its adjusted version, which compare each solution
+with the solution with one profile less (the Mplus `TECH11` output; see
+`vlmr_test()`). The bootstrap likelihood ratio test (`TECH14`) is added with
+`enumeration_blrt()`; very few draws are used here to keep the vignette fast:
+
+```{r}
+enum <- enumeration_blrt(enum, B = 10, starts = c(5, 2), seed = 11, verbose = FALSE)
+enumeration_table(enum)[, c("group", "k", "LRT", "VLMR_p", "aLMR_p", "BLRT_p")]
+```
+
+The classification quality of a solution (entropy and the average posterior
+probabilities of the observations assigned to each profile, the tables printed
+by Mplus) is obtained with `classification_quality()`:
+
+```{r}
+classification_quality(enum$fits[["1"]][["3"]])
+```
+
+The three-profile solution has the lowest BIC and CAIC in both groups. Its
+profiles can be inspected with `profile_plot()` (z scores computed with the
+sample mean and standard deviation of each indicator):
+
+```{r}
+profile_plot(enum$fits[["1"]][["3"]], title = "Younger adults, 3 profiles")
+```
+
+## Steps 1 to 4: similarity tests
+
+```{r}
+sim <- similarity_tests(mglpa_wm, ind, group = "group", k = 3,
+                        starts = c(30, 5), seed = 2, verbose = FALSE)
+sim
+```
+
+Each model is compared with the previous one. Similarity is supported when at
+least two of CAIC, BIC and ABIC decrease. Here structural and dispersion
+similarity are supported and distributional similarity is rejected: the
+profiles have the same shape and the same within-profile variability in both
+groups, but their sizes differ.
+
+```{r}
+profile_proportions(sim$fits$dispersion)
+profile_plot(sim$fits$dispersion, type = "line", title = "Dispersion similarity model")
+```
+
+APA-style tables can be produced and written to a Word-compatible file:
+
+```{r}
+apa_table(sim)
+# write_table_doc(apa_table(sim), "similarity.doc", title = "Table 2")
+```
+
+## Step 5: predictive similarity
+
+The profile solution is held fixed at the estimates of the most constrained
+model supported (the dispersion model), and profile membership is regressed on
+the predictors with group-specific or equal effects.
+
+```{r}
+pred <- predictive_similarity(sim, predictors = c("education", "cog_reserve"),
+                              seed = 3, verbose = FALSE)
+pred
+```
+
+## Step 6: explanatory similarity
+
+Distal outcomes are added as indicators whose means may differ across
+profiles and groups; the profile solution is again held fixed.
+
+```{r}
+expl <- explanatory_similarity(sim, outcomes = c("task_perf", "everyday_func"),
+                               outcome_variances = "equal", seed = 4, verbose = FALSE)
+expl
+head(expl$contrasts$free_means_equal_var)
+```
+
+## Fitting a single model
+
+Every model of the sequence can be specified directly:
+
+```{r}
+m <- mglpa_model(3, ind, group = "group", equal_means = TRUE)
+fit <- fit_lpa(mglpa_wm, m, starts = c(20, 4), seed = 5)
+fit
+head(parameters(fit))
+```
+
+`reorder_profiles()` relabels the profiles (by level, by size, or with an
+explicit permutation); `fixed_from_fit()` extracts estimates to hold them
+fixed in a later model; `contrast_estimates()` computes any linear combination
+of parameters with delta-method standard errors.
+
+## The Shiny application
+
+`mglpa_app()` opens a graphical interface with the same workflow: data import,
+enumeration, similarity tests, profile plots, predictive and explanatory
+similarity, tables and project files.
+
+## Conventions shared with Mplus
+
+* `ESTIMATOR = MLR`: standard errors are sandwich estimates based on the
+  observed information matrix (`se = "robust"`).
+* For `KNOWNCLASS` models Mplus includes the known-group proportions in the
+  log-likelihood and counts them as free parameters, and (up to version 8)
+  computes entropy over the latent class patterns (profiles x groups).
+  `fit_lpa()` follows these conventions when `mplus_convention = TRUE` (the
+  default), so that the values are directly comparable with Mplus output.
+  Mplus 9 instead reports a profile-specific entropy ("Classification
+  Quality for C"), which corresponds to `fit$entropy_profiles`.
+* When predictors of profile membership are brought into the model, Mplus
+  treats them as multivariate normal variables; their saturated means,
+  variances and covariances are added to the log-likelihood and to the
+  parameter count. Regression coefficients and all model comparisons are
+  unaffected.
+* Predictive and explanatory models hold the profile solution fixed at the
+  values of the retained similarity model rounded to five decimals, like
+  Mplus start values (`digits = 5`).
+* `TECH11`: the Vuong-Lo-Mendell-Rubin test uses the weight matrix of Vuong
+  (1989) with the robust (sandwich) covariance matrices of the two models in
+  place of their inverse information matrices, as Mplus does (Vermunt, 2024),
+  p-values computed with Imhof's method, and the adjustment of Lo, Mendell and
+  Rubin (2001), which divides the statistic by 1 + 1 / (d log N). `vlmr_test()`
+  reproduces the statistic, mean, standard deviation and p-values of the Mplus
+  output; `variant = "vuong"` gives Vuong's original matrix (the implementation
+  of LatentGOLD).
+* `TECH14`: the bootstrap p-value is the proportion of bootstrap statistics at
+  least as large as the observed one; in every generated data set the
+  (k - 1)-profile model is started from the parent estimates and the k-profile
+  model uses random starts (`LRTSTARTS`). Mplus chooses the number of draws
+  adaptively, `blrt()` uses the fixed number `B`. Like Mplus, `blrt()` warns
+  when draws with a statistic below the observed one did not replicate their
+  best log-likelihood or did not converge (possible local maxima that
+  understate the bootstrap statistic) and reports the largest p-value they
+  could produce (`p_upper`); draws above the observed statistic whose
+  (k - 1)-profile model did not converge may overstate it, and `p_lower` is
+  the smallest p-value they could produce. Non-converged draws are always
+  listed in the warnings.
+* Classification quality: the same two tables as Mplus (average posterior
+  probabilities by most likely profile, and probabilities of the most likely
+  profile given the profile); for `KNOWNCLASS` models they are computed within
+  each known group.
+
+## References
+
+Lo, Y., Mendell, N. R., & Rubin, D. B. (2001). Testing the number of components
+in a normal mixture. *Biometrika, 88*(3), 767-778.
+
+Morin, A. J. S., Meyer, J. P., Creusier, J., & Biétry, F. (2016). Multiple-group
+analysis of similarity in latent profile solutions. *Organizational Research
+Methods, 19*(2), 231-254. https://doi.org/10.1177/1094428115621148
+
+Vermunt, J. K. (2024). The Vuong-Lo-Mendell-Rubin test for latent class and
+latent profile analysis: A note on the different implementations in Mplus and
+LatentGOLD. *Methodology, 20*(1), Article e12467.
+https://doi.org/10.5964/meth.12467
+
+Vuong, Q. H. (1989). Likelihood ratio tests for model selection and non-nested
+hypotheses. *Econometrica, 57*(2), 307-333.

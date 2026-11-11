@@ -1,0 +1,27 @@
+TITLE: m6_g1_k3_missing
+DATA: FILE IS wm_miss.dat;
+VARIABLE:
+  NAMES = id group group3 verbal_m visual_m updating inhibitn proc_spd educatin
+    cog_rese task_pef everydac;
+  USEVARIABLES = verbal_m visual_m updating inhibitn proc_spd;
+  USEOBS = group EQ 1;
+  MISSING = ALL (999);
+  CLASSES = c (3);
+
+ANALYSIS:
+  TYPE = MIXTURE;
+  ESTIMATOR = MLR;
+  STARTS = 1000 100;
+  STITERATIONS = 20;
+  PROCESSORS = 8;
+
+MODEL:
+  %OVERALL%
+  %c#1%
+  [verbal_m visual_m updating inhibitn proc_spd];
+  %c#2%
+  [verbal_m visual_m updating inhibitn proc_spd];
+  %c#3%
+  [verbal_m visual_m updating inhibitn proc_spd];
+
+OUTPUT: TECH1;

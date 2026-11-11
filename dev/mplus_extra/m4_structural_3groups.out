@@ -1,0 +1,997 @@
+Mplus VERSION 9.1.1
+MUTHEN & MUTHEN
+11/07/2026   9:55 AM
+
+INPUT INSTRUCTIONS
+
+  TITLE: m4_structural_3groups
+  DATA: FILE IS wm3.dat;
+  VARIABLE:
+    NAMES = id group group3 verbal_m visual_m updating inhibitn proc_spd educatin
+      cog_rese task_pef everydac;
+    USEVARIABLES = verbal_m visual_m updating inhibitn proc_spd;
+    KNOWNCLASS = cg (group3 = 1 group3 = 2 group3 = 3);
+    CLASSES = cg (3) c (3);
+
+  ANALYSIS:
+    TYPE = MIXTURE;
+    ESTIMATOR = MLR;
+    STARTS = 1000 100;
+    STITERATIONS = 20;
+    PROCESSORS = 8;
+
+  MODEL:
+    %OVERALL%
+    c#1 on cg#1 cg#2;
+    c#2 on cg#1 cg#2;
+    %cg#1.c#1%
+    [verbal_m visual_m updating inhibitn proc_spd] (m1_1-m1_5);
+    verbal_m visual_m updating inhibitn proc_spd (vg1_1-vg1_5);
+    %cg#1.c#2%
+    [verbal_m visual_m updating inhibitn proc_spd] (m2_1-m2_5);
+    verbal_m visual_m updating inhibitn proc_spd (vg1_1-vg1_5);
+    %cg#1.c#3%
+    [verbal_m visual_m updating inhibitn proc_spd] (m3_1-m3_5);
+    verbal_m visual_m updating inhibitn proc_spd (vg1_1-vg1_5);
+    %cg#2.c#1%
+    [verbal_m visual_m updating inhibitn proc_spd] (m1_1-m1_5);
+    verbal_m visual_m updating inhibitn proc_spd (vg2_1-vg2_5);
+    %cg#2.c#2%
+    [verbal_m visual_m updating inhibitn proc_spd] (m2_1-m2_5);
+    verbal_m visual_m updating inhibitn proc_spd (vg2_1-vg2_5);
+    %cg#2.c#3%
+    [verbal_m visual_m updating inhibitn proc_spd] (m3_1-m3_5);
+    verbal_m visual_m updating inhibitn proc_spd (vg2_1-vg2_5);
+    %cg#3.c#1%
+    [verbal_m visual_m updating inhibitn proc_spd] (m1_1-m1_5);
+    verbal_m visual_m updating inhibitn proc_spd (vg3_1-vg3_5);
+    %cg#3.c#2%
+    [verbal_m visual_m updating inhibitn proc_spd] (m2_1-m2_5);
+    verbal_m visual_m updating inhibitn proc_spd (vg3_1-vg3_5);
+    %cg#3.c#3%
+    [verbal_m visual_m updating inhibitn proc_spd] (m3_1-m3_5);
+    verbal_m visual_m updating inhibitn proc_spd (vg3_1-vg3_5);
+
+  OUTPUT: TECH1;
+
+
+
+*** WARNING in MODEL command
+  All variables are uncorrelated with all other variables within class.
+  Check that this is what is intended.
+   1 WARNING(S) FOUND IN THE INPUT INSTRUCTIONS
+
+
+
+m4_structural_3groups
+
+SUMMARY OF ANALYSIS
+
+Number of groups                                                 1
+Number of observations                                        1000
+
+Number of dependent variables                                    5
+Number of independent variables                                  0
+Number of continuous latent variables                            0
+Number of categorical latent variables                           2
+
+Observed dependent variables
+
+  Continuous
+   VERBAL_M    VISUAL_M    UPDATING    INHIBITN    PROC_SPD
+
+Categorical latent variables
+   CG          C
+
+  Knownclass            CG
+
+
+Estimator                                                      MLR
+Information matrix                                        OBSERVED
+Optimization Specifications for the Quasi-Newton Algorithm for
+Continuous Outcomes
+  Maximum number of iterations                                 100
+  Convergence criterion                                  0.100D-05
+Optimization Specifications for the EM Algorithm
+  Maximum number of iterations                                 500
+  Convergence criteria
+    Loglikelihood change                                 0.100D-06
+    Relative loglikelihood change                        0.100D-06
+    Derivative                                           0.100D-05
+Optimization Specifications for the M step of the EM Algorithm for
+Categorical Latent Variables
+  Number of M step iterations                                    1
+  M step convergence criterion                           0.100D-05
+  Basis for M step termination                           ITERATION
+Optimization Specifications for the M step of the EM Algorithm for
+Censored, Binary or Ordered Categorical (Ordinal), Unordered
+Categorical (Nominal) and Count Outcomes
+  Number of M step iterations                                    1
+  M step convergence criterion                           0.100D-05
+  Basis for M step termination                           ITERATION
+  Maximum value for logit thresholds                            15
+  Minimum value for logit thresholds                           -15
+  Minimum expected cell size for chi-square              0.100D-01
+Optimization algorithm                                         EMA
+Random Starts Specifications
+  Number of initial stage random starts                       1000
+  Number of final stage optimizations                          100
+  Number of initial stage iterations                            20
+  Initial stage convergence criterion                    0.100D+01
+  Random starts scale                                    0.500D+01
+  Random seed for generating random starts                       0
+Parameterization                                             LOGIT
+
+Input data file(s)
+  wm3.dat
+Input data format  FREE
+
+
+
+UNIVARIATE SAMPLE STATISTICS
+
+
+     UNIVARIATE HIGHER-ORDER MOMENT DESCRIPTIVE STATISTICS
+
+         Variable/         Mean/     Skewness/   Minimum/ % with                Percentiles
+        Sample Size      Variance    Kurtosis    Maximum  Min/Max      20%/60%    40%/80%    Median
+
+     VERBAL_M             -0.068       0.003      -2.551    0.10%      -0.980     -0.363     -0.081
+            1000.000       0.929      -0.813       2.172    0.10%       0.169      0.888
+     VISUAL_M             -0.005       0.011      -2.418    0.10%      -0.822     -0.225     -0.014
+            1000.000       0.803      -0.537       2.229    0.10%       0.209      0.801
+     UPDATING             -0.201       0.062      -2.589    0.10%      -1.090     -0.496     -0.246
+            1000.000       0.929      -0.716       2.423    0.10%       0.027      0.733
+     INHIBITN             -0.111       0.057      -2.599    0.10%      -0.912     -0.374     -0.113
+            1000.000       0.724      -0.610       2.135    0.10%       0.135      0.703
+     PROC_SPD              0.024       0.125      -2.472    0.10%      -0.786     -0.279     -0.040
+            1000.000       0.768      -0.691       2.263    0.10%       0.220      0.878
+
+RANDOM STARTS RESULTS RANKED FROM THE BEST TO THE WORST LOGLIKELIHOOD VALUES
+
+Final stage loglikelihood values at local maxima, seeds, and initial stage start numbers:
+
+           -5545.425  944186           541
+           -5545.425  781489           627
+           -5545.425  780698           337
+           -5545.425  462662           872
+           -5545.425  798839           312
+           -5545.425  354559           73
+           -5545.425  471398           74
+           -5545.425  887580           493
+           -5545.425  373815           618
+           -5545.425  436892           565
+           -5545.425  544077           809
+           -5545.425  570681           777
+           -5545.425  220492           743
+           -5545.425  136842           58
+           -5545.425  345726           461
+           -5545.425  551639           55
+           -5545.425  715561           125
+           -5545.425  22089            143
+           -5545.425  442072           625
+           -5545.425  251641           784
+           -5545.425  471438           252
+           -5545.425  411615           171
+           -5545.425  194143           510
+           -5545.425  669634           335
+           -5545.425  897782           545
+           -5545.425  100874           108
+           -5545.425  105435           265
+           -5545.425  283492           435
+           -5545.425  960438           116
+           -5545.425  unperturbed      0
+           -5545.425  364676           27
+           -5545.425  700846           867
+           -5545.425  965639           463
+           -5545.425  891531           206
+           -5545.425  682718           733
+           -5545.425  876943           650
+           -5545.425  61587            400
+           -5545.425  742688           594
+           -5545.425  506113           895
+           -5545.425  303634           169
+           -5545.425  217130           443
+           -5545.425  301717           823
+           -5545.425  926797           406
+           -5545.425  988761           475
+           -5545.425  501995           791
+           -5545.425  260601           36
+           -5545.425  641794           591
+           -5545.425  202790           198
+           -5545.425  903420           5
+           -5545.425  758647           951
+           -5545.425  185071           370
+           -5545.425  741484           441
+           -5545.425  604861           800
+           -5545.425  140442           500
+           -5545.425  548673           732
+           -5545.425  783165           170
+           -5545.425  298553           773
+           -5545.425  21345            199
+           -5545.425  879211           453
+           -5545.425  726744           939
+           -5545.425  576726           280
+           -5545.425  966499           963
+           -5545.425  484501           163
+           -5545.425  650354           577
+           -5545.425  146900           391
+           -5545.425  392407           221
+           -5545.425  94573            983
+           -5545.425  213189           605
+           -5545.425  567165           319
+           -5545.425  991329           182
+           -5545.425  195763           358
+           -5545.425  72866            692
+           -5545.425  760599           832
+           -5545.425  539751           459
+           -5545.425  536551           696
+           -5545.425  344422           296
+           -5545.425  573096           20
+           -5545.425  232559           136
+           -5545.425  580539           786
+           -5545.425  838615           677
+           -5545.425  966603           919
+           -5545.425  679448           937
+           -5545.425  871722           355
+           -5545.425  574412           679
+           -5545.425  907810           795
+           -5545.425  314757           345
+           -5545.425  534864           307
+           -5545.425  535303           923
+           -5545.425  370957           554
+           -5545.425  329127           185
+           -5545.425  458181           189
+           -5545.425  629720           926
+           -5545.425  228459           947
+           -5545.425  961454           665
+           -5545.425  538872           949
+           -5545.425  86651            993
+           -5545.425  97300            640
+           -5545.425  91231            727
+           -5545.425  915107           54
+           -5545.425  766903           505
+
+
+
+THE BEST LOGLIKELIHOOD VALUE HAS BEEN REPLICATED.  RERUN WITH AT LEAST TWICE THE
+RANDOM STARTS TO CHECK THAT THE BEST LOGLIKELIHOOD IS STILL OBTAINED AND REPLICATED.
+
+
+THE MODEL ESTIMATION TERMINATED NORMALLY
+
+
+
+MODEL FIT INFORMATION
+
+Number of Free Parameters                       38
+
+Loglikelihood
+
+          H0 Value                       -5545.425
+          H0 Scaling Correction Factor      0.9851
+            for MLR
+
+Information Criteria
+
+          Akaike (AIC)                   11166.849
+          Bayesian (BIC)                 11353.344
+          Sample-Size Adjusted BIC       11232.654
+            (n* = (n + 2) / 24)
+
+
+
+FINAL CLASS COUNTS AND PROPORTIONS FOR EACH LATENT CLASS VARIABLE
+BASED ON THE ESTIMATED MODEL
+
+  Latent Class
+    Variable    Class
+
+    CG             1       367.00000          0.36700
+                   2       211.00000          0.21100
+                   3       422.00000          0.42200
+    C              1       250.13387          0.25013
+                   2       327.41318          0.32741
+                   3       422.45297          0.42245
+
+
+FINAL CLASS COUNTS AND PROPORTIONS FOR THE LATENT CLASS PATTERNS
+BASED ON THE ESTIMATED MODEL
+
+  Latent Class
+    Pattern
+
+    1  1         82.43039          0.08243
+    1  2        123.66741          0.12367
+    1  3        160.90220          0.16090
+    2  1         70.16450          0.07016
+    2  2         58.90024          0.05890
+    2  3         81.93525          0.08194
+    3  1         97.53898          0.09754
+    3  2        144.84551          0.14485
+    3  3        179.61551          0.17962
+
+     Additional output is available using the TECH15 option of the OUTPUT command.
+
+
+LATENT TRANSITION PROBABILITIES BASED ON THE ESTIMATED MODEL
+
+  CG Classes (Rows) by C Classes (Columns)
+
+            1        2        3
+
+   1     0.225    0.337    0.438
+   2     0.333    0.279    0.388
+   3     0.231    0.343    0.426
+
+
+TRANSITION PROBABILITY ODDS
+
+     TRANSITION TABLE ODDS AND 95% CONFIDENCE INTERVALS FOR CG TO C
+        1.000(1.000,1.000)   1.500(1.131,1.991)   1.952(1.490,2.557)
+        1.191(0.842,1.686)   1.000(1.000,1.000)   1.391(0.991,1.953)
+        0.543(0.423,0.697)   0.806(0.645,1.009)   1.000(1.000,1.000)
+
+
+C-SPECIFIC CLASSIFICATION RESULTS
+
+Classification Quality for CG
+
+     Entropy                         1.000
+
+Average Latent Class Probabilities for Most Likely Latent Class Membership (Row)
+by Latent Class (Column)
+
+           1        2        3
+
+    1   1.000    0.000    0.000
+    2   0.000    1.000    0.000
+    3   0.000    0.000    1.000
+
+
+Classification Probabilities for the Most Likely Latent Class Membership (Column)
+by Latent Class (Row)
+
+           1        2        3
+
+    1   1.000    0.000    0.000
+    2   0.000    1.000    0.000
+    3   0.000    0.000    1.000
+
+
+Logits for the Classification Probabilities for the Most Likely Latent Class Membership (Column)
+by Latent Class (Row)
+
+              1        2        3
+
+    1     13.816    0.000    0.000
+    2      0.000   13.816    0.000
+    3    -13.816  -13.816    0.000
+
+Classification Quality for C
+
+     Entropy                         0.968
+
+Average Latent Class Probabilities for Most Likely Latent Class Membership (Row)
+by Latent Class (Column)
+
+           1        2        3
+
+    1   0.993    0.000    0.007
+    2   0.000    0.983    0.017
+    3   0.002    0.010    0.988
+
+
+Classification Probabilities for the Most Likely Latent Class Membership (Column)
+by Latent Class (Row)
+
+           1        2        3
+
+    1   0.996    0.000    0.004
+    2   0.000    0.987    0.013
+    3   0.004    0.014    0.982
+
+
+Logits for the Classification Probabilities for the Most Likely Latent Class Membership (Column)
+by Latent Class (Row)
+
+              1        2        3
+
+    1      5.528   -8.283    0.000
+    2     -9.446    4.357    0.000
+    3     -5.410   -4.282    0.000
+
+
+MODEL RESULTS
+
+                                                    Two-Tailed
+                    Estimate       S.E.  Est./S.E.    P-Value
+
+Parameters for Class-specific Model Parts
+
+Latent Class Pattern 1 1
+
+ Means
+    VERBAL_M           1.150      0.025     45.809      0.000
+    VISUAL_M           1.064      0.030     35.077      0.000
+    UPDATING           1.010      0.028     36.483      0.000
+    INHIBITN           0.893      0.030     29.913      0.000
+    PROC_SPD           1.151      0.025     45.349      0.000
+
+ Variances
+    VERBAL_M           0.219      0.018     12.441      0.000
+    VISUAL_M           0.241      0.019     13.011      0.000
+    UPDATING           0.236      0.017     13.985      0.000
+    INHIBITN           0.257      0.019     13.513      0.000
+    PROC_SPD           0.239      0.018     13.573      0.000
+
+Latent Class Pattern 1 2
+
+ Means
+    VERBAL_M          -1.089      0.028    -38.783      0.000
+    VISUAL_M          -0.898      0.031    -28.977      0.000
+    UPDATING          -1.217      0.029    -42.092      0.000
+    INHIBITN          -0.939      0.028    -33.538      0.000
+    PROC_SPD          -0.806      0.029    -27.340      0.000
+
+ Variances
+    VERBAL_M           0.219      0.018     12.441      0.000
+    VISUAL_M           0.241      0.019     13.011      0.000
+    UPDATING           0.236      0.017     13.985      0.000
+    INHIBITN           0.257      0.019     13.513      0.000
+    PROC_SPD           0.239      0.018     13.573      0.000
+
+Latent Class Pattern 1 3
+
+ Means
+    VERBAL_M           0.002      0.024      0.074      0.941
+    VISUAL_M           0.055      0.025      2.243      0.025
+    UPDATING          -0.132      0.024     -5.573      0.000
+    INHIBITN          -0.062      0.025     -2.420      0.016
+    PROC_SPD          -0.003      0.024     -0.127      0.899
+
+ Variances
+    VERBAL_M           0.219      0.018     12.441      0.000
+    VISUAL_M           0.241      0.019     13.011      0.000
+    UPDATING           0.236      0.017     13.985      0.000
+    INHIBITN           0.257      0.019     13.513      0.000
+    PROC_SPD           0.239      0.018     13.573      0.000
+
+Latent Class Pattern 2 1
+
+ Means
+    VERBAL_M           1.150      0.025     45.809      0.000
+    VISUAL_M           1.064      0.030     35.077      0.000
+    UPDATING           1.010      0.028     36.483      0.000
+    INHIBITN           0.893      0.030     29.913      0.000
+    PROC_SPD           1.151      0.025     45.349      0.000
+
+ Variances
+    VERBAL_M           0.227      0.025      9.256      0.000
+    VISUAL_M           0.254      0.027      9.434      0.000
+    UPDATING           0.201      0.020     10.225      0.000
+    INHIBITN           0.232      0.021     11.150      0.000
+    PROC_SPD           0.240      0.023     10.446      0.000
+
+Latent Class Pattern 2 2
+
+ Means
+    VERBAL_M          -1.089      0.028    -38.783      0.000
+    VISUAL_M          -0.898      0.031    -28.977      0.000
+    UPDATING          -1.217      0.029    -42.092      0.000
+    INHIBITN          -0.939      0.028    -33.538      0.000
+    PROC_SPD          -0.806      0.029    -27.340      0.000
+
+ Variances
+    VERBAL_M           0.227      0.025      9.256      0.000
+    VISUAL_M           0.254      0.027      9.434      0.000
+    UPDATING           0.201      0.020     10.225      0.000
+    INHIBITN           0.232      0.021     11.150      0.000
+    PROC_SPD           0.240      0.023     10.446      0.000
+
+Latent Class Pattern 2 3
+
+ Means
+    VERBAL_M           0.002      0.024      0.074      0.941
+    VISUAL_M           0.055      0.025      2.243      0.025
+    UPDATING          -0.132      0.024     -5.573      0.000
+    INHIBITN          -0.062      0.025     -2.420      0.016
+    PROC_SPD          -0.003      0.024     -0.127      0.899
+
+ Variances
+    VERBAL_M           0.227      0.025      9.256      0.000
+    VISUAL_M           0.254      0.027      9.434      0.000
+    UPDATING           0.201      0.020     10.225      0.000
+    INHIBITN           0.232      0.021     11.150      0.000
+    PROC_SPD           0.240      0.023     10.446      0.000
+
+Latent Class Pattern 3 1
+
+ Means
+    VERBAL_M           1.150      0.025     45.809      0.000
+    VISUAL_M           1.064      0.030     35.077      0.000
+    UPDATING           1.010      0.028     36.483      0.000
+    INHIBITN           0.893      0.030     29.913      0.000
+    PROC_SPD           1.151      0.025     45.349      0.000
+
+ Variances
+    VERBAL_M           0.208      0.015     13.699      0.000
+    VISUAL_M           0.268      0.018     14.847      0.000
+    UPDATING           0.227      0.016     14.096      0.000
+    INHIBITN           0.243      0.017     13.992      0.000
+    PROC_SPD           0.205      0.015     13.524      0.000
+
+Latent Class Pattern 3 2
+
+ Means
+    VERBAL_M          -1.089      0.028    -38.783      0.000
+    VISUAL_M          -0.898      0.031    -28.977      0.000
+    UPDATING          -1.217      0.029    -42.092      0.000
+    INHIBITN          -0.939      0.028    -33.538      0.000
+    PROC_SPD          -0.806      0.029    -27.340      0.000
+
+ Variances
+    VERBAL_M           0.208      0.015     13.699      0.000
+    VISUAL_M           0.268      0.018     14.847      0.000
+    UPDATING           0.227      0.016     14.096      0.000
+    INHIBITN           0.243      0.017     13.992      0.000
+    PROC_SPD           0.205      0.015     13.524      0.000
+
+Latent Class Pattern 3 3
+
+ Means
+    VERBAL_M           0.002      0.024      0.074      0.941
+    VISUAL_M           0.055      0.025      2.243      0.025
+    UPDATING          -0.132      0.024     -5.573      0.000
+    INHIBITN          -0.062      0.025     -2.420      0.016
+    PROC_SPD          -0.003      0.024     -0.127      0.899
+
+ Variances
+    VERBAL_M           0.208      0.015     13.699      0.000
+    VISUAL_M           0.268      0.018     14.847      0.000
+    UPDATING           0.227      0.016     14.096      0.000
+    INHIBITN           0.243      0.017     13.992      0.000
+    PROC_SPD           0.205      0.015     13.524      0.000
+
+Categorical Latent Variables
+
+ C#1      ON
+    CG#1              -0.058      0.187     -0.311      0.756
+    CG#2               0.455      0.207      2.197      0.028
+
+ C#2      ON
+    CG#1              -0.048      0.168     -0.285      0.775
+    CG#2              -0.115      0.207     -0.554      0.580
+
+ Means
+    CG#1              -0.140      0.071     -1.956      0.050
+    CG#2              -0.693      0.084     -8.221      0.000
+    C#1               -0.611      0.127     -4.803      0.000
+    C#2               -0.215      0.114     -1.884      0.060
+
+
+QUALITY OF NUMERICAL RESULTS
+
+     Condition Number for the Information Matrix              0.805E-03
+       (ratio of smallest to largest eigenvalue)
+
+
+LATENT CLASS INDICATOR MEANS AND PROBABILITIES FOR EACH LATENT CLASS
+
+     MEAN/PROBABILITY PROFILES FOR C
+                       Latent class
+                     1      2      3
+     VERBAL_M      1.150 -1.089  0.002
+     VISUAL_M      1.064 -0.898  0.055
+     UPDATING      1.010 -1.217 -0.132
+     INHIBITN      0.893 -0.939 -0.062
+     PROC_SPD      1.151 -0.806 -0.003
+
+
+TECHNICAL 1 OUTPUT
+
+
+     PARAMETER SPECIFICATION FOR LATENT CLASS PATTERN 1 1
+
+
+           NU
+              VERBAL_M      VISUAL_M      UPDATING      INHIBITN      PROC_SPD
+              ________      ________      ________      ________      ________
+                    1             2             3             4             5
+
+
+           THETA
+              VERBAL_M      VISUAL_M      UPDATING      INHIBITN      PROC_SPD
+              ________      ________      ________      ________      ________
+ VERBAL_M           6
+ VISUAL_M           0             7
+ UPDATING           0             0             8
+ INHIBITN           0             0             0             9
+ PROC_SPD           0             0             0             0            10
+
+
+     PARAMETER SPECIFICATION FOR LATENT CLASS PATTERN 1 2
+
+
+           NU
+              VERBAL_M      VISUAL_M      UPDATING      INHIBITN      PROC_SPD
+              ________      ________      ________      ________      ________
+                   11            12            13            14            15
+
+
+           THETA
+              VERBAL_M      VISUAL_M      UPDATING      INHIBITN      PROC_SPD
+              ________      ________      ________      ________      ________
+ VERBAL_M           6
+ VISUAL_M           0             7
+ UPDATING           0             0             8
+ INHIBITN           0             0             0             9
+ PROC_SPD           0             0             0             0            10
+
+
+     PARAMETER SPECIFICATION FOR LATENT CLASS PATTERN 1 3
+
+
+           NU
+              VERBAL_M      VISUAL_M      UPDATING      INHIBITN      PROC_SPD
+              ________      ________      ________      ________      ________
+                   16            17            18            19            20
+
+
+           THETA
+              VERBAL_M      VISUAL_M      UPDATING      INHIBITN      PROC_SPD
+              ________      ________      ________      ________      ________
+ VERBAL_M           6
+ VISUAL_M           0             7
+ UPDATING           0             0             8
+ INHIBITN           0             0             0             9
+ PROC_SPD           0             0             0             0            10
+
+
+     PARAMETER SPECIFICATION FOR LATENT CLASS PATTERN 2 1
+
+
+           NU
+              VERBAL_M      VISUAL_M      UPDATING      INHIBITN      PROC_SPD
+              ________      ________      ________      ________      ________
+                    1             2             3             4             5
+
+
+           THETA
+              VERBAL_M      VISUAL_M      UPDATING      INHIBITN      PROC_SPD
+              ________      ________      ________      ________      ________
+ VERBAL_M          21
+ VISUAL_M           0            22
+ UPDATING           0             0            23
+ INHIBITN           0             0             0            24
+ PROC_SPD           0             0             0             0            25
+
+
+     PARAMETER SPECIFICATION FOR LATENT CLASS PATTERN 2 2
+
+
+           NU
+              VERBAL_M      VISUAL_M      UPDATING      INHIBITN      PROC_SPD
+              ________      ________      ________      ________      ________
+                   11            12            13            14            15
+
+
+           THETA
+              VERBAL_M      VISUAL_M      UPDATING      INHIBITN      PROC_SPD
+              ________      ________      ________      ________      ________
+ VERBAL_M          21
+ VISUAL_M           0            22
+ UPDATING           0             0            23
+ INHIBITN           0             0             0            24
+ PROC_SPD           0             0             0             0            25
+
+
+     PARAMETER SPECIFICATION FOR LATENT CLASS PATTERN 2 3
+
+
+           NU
+              VERBAL_M      VISUAL_M      UPDATING      INHIBITN      PROC_SPD
+              ________      ________      ________      ________      ________
+                   16            17            18            19            20
+
+
+           THETA
+              VERBAL_M      VISUAL_M      UPDATING      INHIBITN      PROC_SPD
+              ________      ________      ________      ________      ________
+ VERBAL_M          21
+ VISUAL_M           0            22
+ UPDATING           0             0            23
+ INHIBITN           0             0             0            24
+ PROC_SPD           0             0             0             0            25
+
+
+     PARAMETER SPECIFICATION FOR LATENT CLASS PATTERN 3 1
+
+
+           NU
+              VERBAL_M      VISUAL_M      UPDATING      INHIBITN      PROC_SPD
+              ________      ________      ________      ________      ________
+                    1             2             3             4             5
+
+
+           THETA
+              VERBAL_M      VISUAL_M      UPDATING      INHIBITN      PROC_SPD
+              ________      ________      ________      ________      ________
+ VERBAL_M          26
+ VISUAL_M           0            27
+ UPDATING           0             0            28
+ INHIBITN           0             0             0            29
+ PROC_SPD           0             0             0             0            30
+
+
+     PARAMETER SPECIFICATION FOR LATENT CLASS PATTERN 3 2
+
+
+           NU
+              VERBAL_M      VISUAL_M      UPDATING      INHIBITN      PROC_SPD
+              ________      ________      ________      ________      ________
+                   11            12            13            14            15
+
+
+           THETA
+              VERBAL_M      VISUAL_M      UPDATING      INHIBITN      PROC_SPD
+              ________      ________      ________      ________      ________
+ VERBAL_M          26
+ VISUAL_M           0            27
+ UPDATING           0             0            28
+ INHIBITN           0             0             0            29
+ PROC_SPD           0             0             0             0            30
+
+
+     PARAMETER SPECIFICATION FOR LATENT CLASS PATTERN 3 3
+
+
+           NU
+              VERBAL_M      VISUAL_M      UPDATING      INHIBITN      PROC_SPD
+              ________      ________      ________      ________      ________
+                   16            17            18            19            20
+
+
+           THETA
+              VERBAL_M      VISUAL_M      UPDATING      INHIBITN      PROC_SPD
+              ________      ________      ________      ________      ________
+ VERBAL_M          26
+ VISUAL_M           0            27
+ UPDATING           0             0            28
+ INHIBITN           0             0             0            29
+ PROC_SPD           0             0             0             0            30
+
+
+     PARAMETER SPECIFICATION FOR LATENT CLASS REGRESSION MODEL PART
+
+
+           ALPHA(C)
+              CG#1          CG#2          CG#3          C#1           C#2
+              ________      ________      ________      ________      ________
+                   31            32             0            33            34
+
+
+           ALPHA(C)
+              C#3
+              ________
+                    0
+
+
+           BETA(C)
+              CG#1          CG#2          CG#3
+              ________      ________      ________
+ C#1               35            37             0
+ C#2               36            38             0
+ C#3                0             0             0
+
+
+     STARTING VALUES FOR LATENT CLASS PATTERN 1 1
+
+
+           NU
+              VERBAL_M      VISUAL_M      UPDATING      INHIBITN      PROC_SPD
+              ________      ________      ________      ________      ________
+               -0.389        -0.304        -0.522        -0.394        -0.268
+
+
+           THETA
+              VERBAL_M      VISUAL_M      UPDATING      INHIBITN      PROC_SPD
+              ________      ________      ________      ________      ________
+ VERBAL_M       0.464
+ VISUAL_M       0.000         0.402
+ UPDATING       0.000         0.000         0.465
+ INHIBITN       0.000         0.000         0.000         0.362
+ PROC_SPD       0.000         0.000         0.000         0.000         0.384
+
+
+     STARTING VALUES FOR LATENT CLASS PATTERN 1 2
+
+
+           NU
+              VERBAL_M      VISUAL_M      UPDATING      INHIBITN      PROC_SPD
+              ________      ________      ________      ________      ________
+               -0.068        -0.005        -0.201        -0.111         0.024
+
+
+           THETA
+              VERBAL_M      VISUAL_M      UPDATING      INHIBITN      PROC_SPD
+              ________      ________      ________      ________      ________
+ VERBAL_M       0.464
+ VISUAL_M       0.000         0.402
+ UPDATING       0.000         0.000         0.465
+ INHIBITN       0.000         0.000         0.000         0.362
+ PROC_SPD       0.000         0.000         0.000         0.000         0.384
+
+
+     STARTING VALUES FOR LATENT CLASS PATTERN 1 3
+
+
+           NU
+              VERBAL_M      VISUAL_M      UPDATING      INHIBITN      PROC_SPD
+              ________      ________      ________      ________      ________
+                0.254         0.293         0.120         0.173         0.316
+
+
+           THETA
+              VERBAL_M      VISUAL_M      UPDATING      INHIBITN      PROC_SPD
+              ________      ________      ________      ________      ________
+ VERBAL_M       0.464
+ VISUAL_M       0.000         0.402
+ UPDATING       0.000         0.000         0.465
+ INHIBITN       0.000         0.000         0.000         0.362
+ PROC_SPD       0.000         0.000         0.000         0.000         0.384
+
+
+     STARTING VALUES FOR LATENT CLASS PATTERN 2 1
+
+
+           NU
+              VERBAL_M      VISUAL_M      UPDATING      INHIBITN      PROC_SPD
+              ________      ________      ________      ________      ________
+               -0.389        -0.304        -0.522        -0.394        -0.268
+
+
+           THETA
+              VERBAL_M      VISUAL_M      UPDATING      INHIBITN      PROC_SPD
+              ________      ________      ________      ________      ________
+ VERBAL_M       0.464
+ VISUAL_M       0.000         0.402
+ UPDATING       0.000         0.000         0.465
+ INHIBITN       0.000         0.000         0.000         0.362
+ PROC_SPD       0.000         0.000         0.000         0.000         0.384
+
+
+     STARTING VALUES FOR LATENT CLASS PATTERN 2 2
+
+
+           NU
+              VERBAL_M      VISUAL_M      UPDATING      INHIBITN      PROC_SPD
+              ________      ________      ________      ________      ________
+               -0.068        -0.005        -0.201        -0.111         0.024
+
+
+           THETA
+              VERBAL_M      VISUAL_M      UPDATING      INHIBITN      PROC_SPD
+              ________      ________      ________      ________      ________
+ VERBAL_M       0.464
+ VISUAL_M       0.000         0.402
+ UPDATING       0.000         0.000         0.465
+ INHIBITN       0.000         0.000         0.000         0.362
+ PROC_SPD       0.000         0.000         0.000         0.000         0.384
+
+
+     STARTING VALUES FOR LATENT CLASS PATTERN 2 3
+
+
+           NU
+              VERBAL_M      VISUAL_M      UPDATING      INHIBITN      PROC_SPD
+              ________      ________      ________      ________      ________
+                0.254         0.293         0.120         0.173         0.316
+
+
+           THETA
+              VERBAL_M      VISUAL_M      UPDATING      INHIBITN      PROC_SPD
+              ________      ________      ________      ________      ________
+ VERBAL_M       0.464
+ VISUAL_M       0.000         0.402
+ UPDATING       0.000         0.000         0.465
+ INHIBITN       0.000         0.000         0.000         0.362
+ PROC_SPD       0.000         0.000         0.000         0.000         0.384
+
+
+     STARTING VALUES FOR LATENT CLASS PATTERN 3 1
+
+
+           NU
+              VERBAL_M      VISUAL_M      UPDATING      INHIBITN      PROC_SPD
+              ________      ________      ________      ________      ________
+               -0.389        -0.304        -0.522        -0.394        -0.268
+
+
+           THETA
+              VERBAL_M      VISUAL_M      UPDATING      INHIBITN      PROC_SPD
+              ________      ________      ________      ________      ________
+ VERBAL_M       0.464
+ VISUAL_M       0.000         0.402
+ UPDATING       0.000         0.000         0.465
+ INHIBITN       0.000         0.000         0.000         0.362
+ PROC_SPD       0.000         0.000         0.000         0.000         0.384
+
+
+     STARTING VALUES FOR LATENT CLASS PATTERN 3 2
+
+
+           NU
+              VERBAL_M      VISUAL_M      UPDATING      INHIBITN      PROC_SPD
+              ________      ________      ________      ________      ________
+               -0.068        -0.005        -0.201        -0.111         0.024
+
+
+           THETA
+              VERBAL_M      VISUAL_M      UPDATING      INHIBITN      PROC_SPD
+              ________      ________      ________      ________      ________
+ VERBAL_M       0.464
+ VISUAL_M       0.000         0.402
+ UPDATING       0.000         0.000         0.465
+ INHIBITN       0.000         0.000         0.000         0.362
+ PROC_SPD       0.000         0.000         0.000         0.000         0.384
+
+
+     STARTING VALUES FOR LATENT CLASS PATTERN 3 3
+
+
+           NU
+              VERBAL_M      VISUAL_M      UPDATING      INHIBITN      PROC_SPD
+              ________      ________      ________      ________      ________
+                0.254         0.293         0.120         0.173         0.316
+
+
+           THETA
+              VERBAL_M      VISUAL_M      UPDATING      INHIBITN      PROC_SPD
+              ________      ________      ________      ________      ________
+ VERBAL_M       0.464
+ VISUAL_M       0.000         0.402
+ UPDATING       0.000         0.000         0.465
+ INHIBITN       0.000         0.000         0.000         0.362
+ PROC_SPD       0.000         0.000         0.000         0.000         0.384
+
+
+     STARTING VALUES FOR LATENT CLASS REGRESSION MODEL PART
+
+
+           ALPHA(C)
+              CG#1          CG#2          CG#3          C#1           C#2
+              ________      ________      ________      ________      ________
+                0.000         0.000         0.000         0.000         0.000
+
+
+           ALPHA(C)
+              C#3
+              ________
+                0.000
+
+
+           BETA(C)
+              CG#1          CG#2          CG#3
+              ________      ________      ________
+ C#1            0.000         0.000         0.000
+ C#2            0.000         0.000         0.000
+ C#3            0.000         0.000         0.000
+
+
+     Beginning Time:  09:55:53
+        Ending Time:  09:55:59
+       Elapsed Time:  00:00:06
+
+
+
+MUTHEN & MUTHEN
+3463 Stoner Ave.
+Los Angeles, CA  90066
+
+Tel: (310) 391-9971
+Fax: (310) 391-8971
+Web: www.StatModel.com
+Support: Support@StatModel.com
+
+Copyright (c) 1998-2026 Muthen & Muthen

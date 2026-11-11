@@ -1,0 +1,27 @@
+# R session and IDE files
+.Rproj.user/
+.Rhistory
+.RData
+.Ruserdata
+
+# Compiled code
+src/*.o
+src/*.so
+src/*.dll
+
+# Build and check output
+*.Rcheck/
+/*.tar.gz
+/doc/
+/Meta/
+inst/doc/
+
+# testthat artefacts of failed runs
+tests/testthat/_problems/
+tests/testthat/testthat-problems.rds
+
+# Local development output and scratch scripts
+dev/log_*.txt
+dev/out/
+dev/proto_*.R
+dev/debug_*.R

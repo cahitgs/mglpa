@@ -1,0 +1,28 @@
+TITLE: t11_g1_k4_classinvariant
+DATA: FILE IS wm3.dat;
+VARIABLE:
+  NAMES = id group group3 verbal_m visual_m updating inhibitn proc_spd educatin
+    cog_rese task_pef everydac;
+  USEVARIABLES = verbal_m visual_m updating inhibitn proc_spd;
+  USEOBS = group EQ 1;
+  CLASSES = c (4);
+
+ANALYSIS:
+  TYPE = MIXTURE;
+  ESTIMATOR = MLR;
+  STARTS = 1000 100;
+  STITERATIONS = 20;
+  PROCESSORS = 8;
+
+MODEL:
+  %OVERALL%
+  %c#1%
+  [verbal_m visual_m updating inhibitn proc_spd];
+  %c#2%
+  [verbal_m visual_m updating inhibitn proc_spd];
+  %c#3%
+  [verbal_m visual_m updating inhibitn proc_spd];
+  %c#4%
+  [verbal_m visual_m updating inhibitn proc_spd];
+
+OUTPUT: TECH1 TECH11;
